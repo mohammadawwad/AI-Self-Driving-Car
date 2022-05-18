@@ -1,6 +1,5 @@
 class Car {
 
-    //constructor with all required information for the car and sets the paramater as variables in the class
     constructor(x, y, width, height){
         this.x = x;
         this.y = y;
