@@ -13,8 +13,20 @@ class Car {
         this.friction = 0.05;
         this.angle = 0;
 
+        //sensor object, with the car as a parameter
+        this.sensors = new Sensors(this);
+
         //user controls object
         this.controls = new Controls();
+    }
+
+    //method that updates the cars graphics through the following private methods
+    update(roadBorders){
+        this.#verticleMovement();
+        this.#horizontalMovement();
+
+        //updating the sensor as well
+        this.sensors.update(roadBorders);
     }
 
     //method that draws the car
@@ -30,12 +42,9 @@ class Car {
         ctx.fill();
 
         ctx.restore();
-    }
 
-    //method that updates the cars graphics through the following private methods
-    update(){
-        this.#verticleMovement();
-        this.#horizontalMovement();
+        //car having the responsibility for drawing its sensors
+        this.sensors.draw(ctx);
     }
 
     #verticleMovement(){
