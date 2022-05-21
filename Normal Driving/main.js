@@ -21,11 +21,12 @@ function animate(){
 
     //updates the borders for traffic
     for(let i = 0; i < traffic.length; i++) {
-        traffic[i].update(road.borders)
+        //dont pass traffic as border or collision object as it will detect itself as hit so pass an empty array
+        traffic[i].update(road.borders, [])
     }
 
-    //border for the original car
-    car.update(road.borders);
+    //border for the original car, and the traffic that must be avoided too
+    car.update(road.borders, traffic);
 
     //stretching full screen vertically, its in here as it will constantly be called and will be responsive
     canvas.height = window.innerHeight;
@@ -34,16 +35,20 @@ function animate(){
     ctx.save();
     ctx.translate(0, -car.y + canvas.height * 0.7)
 
-    //draws the car and road
+    //draws the road
     road.draw(ctx);
-    car.draw(ctx);
 
     //drawing the traffic cars
     for(let i =0; i < traffic.length; i++) {
-        traffic[i].draw(ctx);
+        traffic[i].draw(ctx, "blue");
     }
+
+    //draws the controlled car
+    car.draw(ctx, "green");
     
     ctx.restore();
     requestAnimationFrame(animate);
 }
+
+
 

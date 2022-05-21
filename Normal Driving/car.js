@@ -16,7 +16,6 @@ class Car {
         //collision variable
         this.damaged = false;
 
-
         //only allowing the controled car to have sensors
         if(controlType != "TRAFFIC") {
             //sensor object, with the car as a parameter
@@ -28,7 +27,7 @@ class Car {
     }
 
     //method that updates the cars graphics through the following private methods
-    update(roadBorders){
+    update(roadBorders, traffic){
 
         //only lets you move the car if itsnt damaged
         if(!this.damaged) {
@@ -36,26 +35,25 @@ class Car {
             this.#verticleMovement();
             this.#horizontalMovement();
                 
-            //hitbox and checks if it is damaged
+            //hitbox and checks if it is damaged by the border or traffic
             this.polygon = this.#createPolygon();
-            this.damaged = this.#checkForDamage(roadBorders);
-
+            this.damaged = this.#checkForDamage(roadBorders, traffic);
         }
 
-        //updating the sensor as well if it exists
+        //updating the sensor to recognise borders and traffic, if the snsor object exists
         if(this.sensors) {
-            this.sensors.update(roadBorders);
+            this.sensors.update(roadBorders, traffic);
         }
     }
 
     //method that draws the car
-    draw(ctx){
+    draw(ctx, color){
 
         //changes the cars color depending on if it has crashed
         if(this.damaged == true) {
             ctx.fillStyle = "red";
         } else {
-            ctx.fillStyle = "green"
+            ctx.fillStyle = color;
         }
 
         ctx.beginPath();
@@ -117,13 +115,21 @@ class Car {
         return points;
     }
 
-    #checkForDamage(roadBorders) {
+    #checkForDamage(roadBorders, traffic) {
 
         //loops over all the borders
         for(let i = 0; i < roadBorders.length; i++){
 
-            //if ther is an intersection between the polygon hitbox we will set the car to be damaged
+            //if ther is an intersection between the polygon hitbox and the border we will set the car to be damaged
             if(polysIntersect(this.polygon, roadBorders[i])){
+                return true;
+            }
+        }
+        //loops over all the traffic
+        for(let i = 0; i < traffic.length; i++){
+
+            //if ther is an intersection between the polygon hitbox and traffic we will set the car to be damaged
+            if(polysIntersect(this.polygon, traffic[i].polygon)){
                 return true;
             }
         }
@@ -184,4 +190,3 @@ class Car {
         this.x -= Math.sin(this.angle) * this.speed;
     }
 }
-

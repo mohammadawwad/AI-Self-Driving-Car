@@ -14,13 +14,14 @@ class Sensors {
         this.readings = [];
     }
 
-    update(roadBorders) {
+    update(roadBorders, traffic) {
        this.#showRays();
 
+       //loops overs the sensors to see if it has detected anything
        this.readings = [];
        for(let i = 0; i < this.rays.length; i++){
            this.readings.push(
-               this.#getReadings(this.rays[i], roadBorders)
+               this.#getReadings(this.rays[i], roadBorders, traffic)
            )
        }
     }
@@ -98,15 +99,29 @@ class Sensors {
         }
     }
 
-    #getReadings(ray, roadBorders) {
+    #getReadings(ray, roadBorders, traffic) {
         let touches = [];
 
-        //addes anything detected within the rays to the array
+        //addes if any borders have been detected 
         for(let i = 0; i < roadBorders.length; i++){
             const touched = getIntersection(ray[0], ray[1], roadBorders[i][0], roadBorders[i][1]);
 
             if(touched){
                 touches.push(touched);
+            }
+        }
+
+        
+        //addes if any traffic has been detected 
+        for(let i = 0; i < traffic.length; i++){
+            const poly = traffic[i].polygon;
+            
+            for(let j = 0; j < poly.length; j++){
+                const touched = getIntersection(ray[0], ray[1], poly[j], poly[(j + 1) % poly.length]);
+
+                if(touched){
+                    touches.push(touched);
+                }
             }
         }
 
