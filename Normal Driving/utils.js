@@ -24,3 +24,32 @@ function getIntersection(A,B,C,D){
 
     return null;
 }
+
+
+function polysIntersect(poly1, poly2) {
+
+    //looping over each point in the first polygon
+    for(let i = 0; i < poly1.length; i++) {
+
+        //for each time we go over a point in the first polygon, we will check every point in the second polygon
+        for(let j = 0; j < poly2.length; j++) {
+
+            //comparing the segments between the 2 polygons
+            const touched = getIntersection(
+                poly1[1],
+                poly1[(i + 1) % poly1.length],
+
+                poly2[j],
+                poly2[(j + 1) % poly2.length],
+            )
+
+            //returning true if the have touched
+            if(touched) {
+                return true
+            }
+        }
+    }
+
+    //if the car is safe it will return false (hasnt crashed)
+    return false;
+}

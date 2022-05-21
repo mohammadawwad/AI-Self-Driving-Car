@@ -13,6 +13,9 @@ class Car {
         this.friction = 0.05;
         this.angle = 0;
 
+        //collision variable
+        this.damaged = false;
+
         //sensor object, with the car as a parameter
         this.sensors = new Sensors(this);
 
@@ -22,8 +25,13 @@ class Car {
 
     //method that updates the cars graphics through the following private methods
     update(roadBorders){
+        //car physics
         this.#verticleMovement();
         this.#horizontalMovement();
+
+        //hitbox and checks if it is damaged
+        this.polygon = this.#createPolygon();
+        this.damaged = this.#checkForDamage(roadBorders);
 
         //updating the sensor as well
         this.sensors.update(roadBorders);
@@ -31,21 +39,84 @@ class Car {
 
     //method that draws the car
     draw(ctx){
-        //allows for the rotation of the car to happen
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(-this.angle);
 
-        //rectangle representing the car
+        //changes the cars color depending on if it has crashed
+        if(this.damaged == true) {
+            ctx.fillStyle = "red";
+        } else {
+            ctx.fillStyle = "green"
+        }
+
         ctx.beginPath();
-        ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-        ctx.fill();
 
-        ctx.restore();
+        //drawing the first polygon points
+        ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+
+        //looping over all polygon points array to finish the drawing
+        for(let i = 1; i < this.polygon.length; i++){
+            ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
+        }
+
+        //filling in the rectangle
+        ctx.fill();
 
         //car having the responsibility for drawing its sensors
         this.sensors.draw(ctx);
     }
+
+    //creating a hitbox useable for all shapes
+    #createPolygon() {
+        const points = [];
+
+        //get the radius
+        const rad = Math.hypot(this.width, this.height) / 2;
+
+        //angle of triangle within the shap to the corner
+        const alpha = Math.atan2(this.width, this.height);
+
+        //multiple the radius in the points that are being pushed to change the shape of the polygon
+
+        //top right point
+        points.push({
+            x: this.x - Math.sin(this.angle - alpha) * rad * 3,
+            y: this.y - Math.cos(this.angle - alpha) * rad * 3
+        });
+
+        //top left point
+        points.push({
+            x: this.x - Math.sin(this.angle + alpha) * rad,
+            y: this.y - Math.cos(this.angle + alpha) * rad
+        });
+
+        //bottom right point
+        points.push({
+            x: this.x - Math.sin(Math.PI + this.angle - alpha) * rad,
+            y: this.y - Math.cos(Math.PI + this.angle - alpha) * rad
+        });
+
+        //bottom left point
+        points.push({
+            x: this.x - Math.sin(Math.PI + this.angle + alpha) * rad,
+            y: this.y - Math.cos(Math.PI + this.angle + alpha) * rad
+        });
+
+        return points;
+    }
+
+    #checkForDamage(roadBorders) {
+
+        //loops over all the borders
+        for(let i = 0; i < roadBorders.length; i++){
+
+            //if ther is an intersection between the polygon hitbox we will set the car to be damaged
+            if(polysIntersect(this.polygon, roadBorders[i])){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     #verticleMovement(){
         //the acceleration allows it to feel smother and more netural
