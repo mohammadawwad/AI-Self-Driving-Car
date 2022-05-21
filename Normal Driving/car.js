@@ -78,8 +78,8 @@ class Car {
 
         //top right point
         points.push({
-            x: this.x - Math.sin(this.angle - alpha) * rad * 3,
-            y: this.y - Math.cos(this.angle - alpha) * rad * 3
+            x: this.x - Math.sin(this.angle - alpha) * rad,
+            y: this.y - Math.cos(this.angle - alpha) * rad
         });
 
         //top left point
