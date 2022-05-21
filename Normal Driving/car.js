@@ -1,6 +1,6 @@
 class Car {
 
-    constructor(x, y, width, height){
+    constructor(x, y, width, height, controlType, maxSpeed = 3.5){
         this.x = x;
         this.y = y;
         this.width = width;
@@ -8,7 +8,7 @@ class Car {
 
         //used for driving mechanics
         this.speed = 0;
-        this.maxSpeed = 3.5;
+        this.maxSpeed = maxSpeed;
         this.acceleration = 0.2;
         this.friction = 0.05;
         this.angle = 0;
@@ -16,25 +16,36 @@ class Car {
         //collision variable
         this.damaged = false;
 
-        //sensor object, with the car as a parameter
-        this.sensors = new Sensors(this);
 
+        //only allowing the controled car to have sensors
+        if(controlType != "TRAFFIC") {
+            //sensor object, with the car as a parameter
+            this.sensors = new Sensors(this);
+        }
+  
         //user controls object
-        this.controls = new Controls();
+        this.controls = new Controls(controlType);
     }
 
     //method that updates the cars graphics through the following private methods
     update(roadBorders){
-        //car physics
-        this.#verticleMovement();
-        this.#horizontalMovement();
 
-        //hitbox and checks if it is damaged
-        this.polygon = this.#createPolygon();
-        this.damaged = this.#checkForDamage(roadBorders);
+        //only lets you move the car if itsnt damaged
+        if(!this.damaged) {
+            //car physics 
+            this.#verticleMovement();
+            this.#horizontalMovement();
+                
+            //hitbox and checks if it is damaged
+            this.polygon = this.#createPolygon();
+            this.damaged = this.#checkForDamage(roadBorders);
 
-        //updating the sensor as well
-        this.sensors.update(roadBorders);
+        }
+
+        //updating the sensor as well if it exists
+        if(this.sensors) {
+            this.sensors.update(roadBorders);
+        }
     }
 
     //method that draws the car
@@ -60,8 +71,11 @@ class Car {
         //filling in the rectangle
         ctx.fill();
 
-        //car having the responsibility for drawing its sensors
-        this.sensors.draw(ctx);
+        //car having the responsibility for drawing its sensors if the object exists
+        if(this.sensors) {
+            this.sensors.draw(ctx);
+        }
+
     }
 
     //creating a hitbox useable for all shapes

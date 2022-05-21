@@ -1,13 +1,23 @@
 class Controls {
 
-    constructor(){
+    constructor(type){
         this.forward = false;
         this.left = false;
         this.right = false;
         this.reverse = false;
 
-        //private keyboard listner
-        this.#addKeyboardListener();
+        //decides what kind of controls the cars will have
+        switch(type) {
+            case "KEYS":
+                //private keyboard listner for the car we want to control
+                this.#addKeyboardListener();
+                break;
+
+            case "TRAFFIC":
+            default:
+                this.forward = true;
+                break;
+        }
     }
 
     #addKeyboardListener(){
