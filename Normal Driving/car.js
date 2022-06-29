@@ -56,7 +56,7 @@ class Car {
             );
 
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
-            console.log(outputs);
+            // console.log(outputs);
 
             if(this.useNeuarlBrain){
                 //the position in which is turned on that controls each function, it can be seen in the console log above

@@ -13,10 +13,10 @@ const neuralNetworkCTX = neuralNetworkCanvas.getContext("2d");
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
 // was "KEYS" before to be able to drive the car
-// const car = new Car(road.getLaneCenter(1), 100, 30, 50, "AI");
+const car = new Car(road.getLaneCenter(1), 100, 30, 50, "KEYS");
 
 //generating multiple AI cars
-const numberOfCars = 100;
+const numberOfCars = 50;
 const cars = generateCars(numberOfCars);
 
 //gloabl variable for the best car, which will be set to the first car at the start
@@ -31,7 +31,7 @@ if(localStorage.getItem("bestBrain")){
 
         //mutating all the other cars to have some sort of variation based on the saved network, the variation depends on the amount value givwen bellow 
         if(i != 0){
-            Neural.mutate(cars[i].brain, 0.1)
+            NeuralNetwork.mutate(cars[i].brain, 0.1)
         }
     }
 }
@@ -40,7 +40,6 @@ if(localStorage.getItem("bestBrain")){
 const traffic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(2), -300, 30, 50, "TRAFFIC", 2),
-    new Car(road.getLaneCenter(1), -500, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(2), -550, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(0), -600, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(4), -700, 30, 50, "TRAFFIC", 2),
@@ -65,7 +64,8 @@ function generateCars(numberOfCars){
 function saveNetwork(){
 
     //saving the data in the local storage
-    localStorgae.setItem("bestBrain", JSON.stringify(bestCar.brain));
+    localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
+    console.log("saved");
 }
 
 //removing the best cars brain neural network
@@ -90,10 +90,11 @@ function animate(time){
         traffic[i].update(road.borders, [])
     }
 
-    //border for the cars, and the traffic that must be avoided too
+    //border for the AI cars, and the traffic that must be avoided too, and for the driven one too
     for(let i = 0; i < cars.length; i++){
         cars[i].update(road.borders, traffic);
     }
+    car.update(road.borders, traffic);
 
     //stretching full screen vertically, its in here as it will constantly be called and will be responsive
     carCanvas.height = window.innerHeight;
@@ -101,7 +102,7 @@ function animate(time){
 
     //make a camera follow the best car
     carCTX.save();
-    carCTX.translate(0, -bestCar.y + carCanvas.height * 0.7)
+    carCTX.translate(0, (-bestCar.y + -car.y) / 2 +  carCanvas.height * 0.7)
 
     //draws the road
     road.draw(carCTX);
@@ -116,10 +117,12 @@ function animate(time){
     for(let i = 0; i < cars.length; i++){
        cars[i].draw(carCTX, "green");
     }
+    
 
     //setting the transperency back to normal for the car in view and making it the only one to have the sensors
     carCTX.globalAlpha = 1;
     bestCar.draw(carCTX, "green", true)
+    car.draw(carCTX, "purple", true);
 
     carCTX.restore();
 
