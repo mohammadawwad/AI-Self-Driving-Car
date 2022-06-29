@@ -68,8 +68,8 @@ class Car {
         }
     }
 
-    //method that draws the car
-    draw(ctx, color) {
+    //method that draws the car with draw sensors deault being false
+    draw(ctx, color, drawSensors = false) {
 
         //changes the cars color depending on if it has crashed
         if (this.damaged == true) {
@@ -91,8 +91,8 @@ class Car {
         //filling in the rectangle
         ctx.fill();
 
-        //car having the responsibility for drawing its sensors if the object exists
-        if (this.sensors) {
+        //car having the responsibility for drawing its sensors if the object exists and its sensors is set to true
+        if (this.sensors && drawSensors) {
             this.sensors.draw(ctx);
         }
 
