@@ -22,6 +22,34 @@ class NeuralNetwork {
         //final output lets us know whether the car needs to go forward, backward, left, or right
         return outputs;
     }
+
+    //muatating method, amount is equal to the percent it will want to replicate the prev model
+    static mutate(network, amount = 1){
+
+        //going through all the levels of the network
+        network.levels.forEach(level => {
+
+            //replicating the biases
+            for(let i = 0; i < level.biases.length; i++){
+                level.biases[i]  = lerp(
+                    level.biases[i],
+                    Math.random() * 2 - 1,
+                    amount
+                );
+            }
+
+            //replicating the weights
+            for(let i = 0; i < level.weights.length; i++){
+               for(let j = 0; j < level.weights[i].length; j++){
+                   level.weights[i][j] = lerp(
+                       level.weights[i][j],
+                       Math.random() * 2 - 1
+                   );
+               }
+            }
+
+        });
+    }
 }
 
 

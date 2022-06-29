@@ -19,9 +19,31 @@ const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 const numberOfCars = 100;
 const cars = generateCars(numberOfCars);
 
+//gloabl variable for the best car, which will be set to the first car at the start
+let bestCar = cars[0];
+
+//parsing the best cars brain
+if(localStorage.getItem("bestBrain")){
+
+    //looping over the cars and giving them the previous neural network
+    for(let i = 0; i < cars.length; i++){
+        bestCar.brain = JSON.parse(localStorage.getItem("bestBrain"));
+
+        //mutating all the other cars to have some sort of variation based on the saved network, the variation depends on the amount value givwen bellow 
+        if(i != 0){
+            Neural.mutate(cars[i].brain, 0.1)
+        }
+    }
+}
+
 //creating an array of cars for traffic, make sure to specify is is traffic and its speed
 const traffic = [
-    new Car(road.getLaneCenter(1), -100, 30, 50, "TRAFFIC", 2)
+    new Car(road.getLaneCenter(1), -100, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(2), -300, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(1), -500, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(2), -550, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(0), -600, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(4), -700, 30, 50, "TRAFFIC", 2),
 ]
 
 //repeativly calls the animate function
@@ -33,17 +55,29 @@ function generateCars(numberOfCars){
 
     //creating the cars
     for(let i = 0; i <= numberOfCars; i++){
-        cars.push(new Car(road.getLaneCenter(1), 100, 30, 50, "AI"))
+        cars.push(new Car(road.getLaneCenter(2), 100, 30, 50, "AI"))
     }
 
     return cars;
+}
+
+//saving the best cars brain neural network
+function saveNetwork(){
+
+    //saving the data in the local storage
+    localStorgae.setItem("bestBrain", JSON.stringify(bestCar.brain));
+}
+
+//removing the best cars brain neural network
+function discardNetwork(){
+    localStorage.removeItem("bestBrain");
 }
 
 //animates the car to allow it to moveby repainting and errasing
 function animate(time){
 
     //the best car that has moved the farthest along the y axis
-    const bestCar = cars.find(
+    bestCar = cars.find(
         c => c.y == Math.min(
             //creating and spreading a new array of the y values of the cars
             ...cars.map(c => c.y)
