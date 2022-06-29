@@ -1,6 +1,6 @@
 class Car {
 
-    constructor(x, y, width, height, controlType, maxSpeed = 3.5) {
+    constructor(x, y, width, height, controlType, maxSpeed = 3.5, color = "green") {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -90,6 +90,7 @@ class Car {
 
         //filling in the rectangle
         ctx.fill();
+  
 
         //car having the responsibility for drawing its sensors if the object exists and its sensors is set to true
         if (this.sensors && drawSensors) {
