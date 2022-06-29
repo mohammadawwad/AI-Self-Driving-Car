@@ -16,6 +16,9 @@ class Car {
         //collision variable
         this.damaged = false;
 
+        //allows for the neural network to control the car 
+        this.useNeuarlBrain = controlType == "AI";
+
         //only allowing the controled car to have sensors
         if (controlType != "TRAFFIC") {
             //sensor object, with the car as a parameter
@@ -54,6 +57,14 @@ class Car {
 
             const outputs = NeuralNetwork.feedForward(offsets, this.brain);
             console.log(outputs);
+
+            if(this.useNeuarlBrain){
+                //the position in which is turned on that controls each function, it can be seen in the console log above
+                this.controls.forward = outputs[0];
+                this.controls.left = outputs[1];
+                this.controls.right = outputs[2];
+                this.controls.reverse = outputs[3];
+            }
         }
     }
 

@@ -5,6 +5,10 @@ body {
     text-align:center;
 }
 
-#myCanvas { 
+#CarCanvas { 
     background: lightgray;
+}
+
+#NueralNetworkCanvas { 
+    background: rgb(32, 32, 32);
 }
