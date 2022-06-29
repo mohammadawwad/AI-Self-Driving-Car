@@ -20,6 +20,9 @@ class Car {
         if(controlType != "TRAFFIC") {
             //sensor object, with the car as a parameter
             this.sensors = new Sensors(this);
+
+            //array of neuron counts
+            this.brain = new NeuralNetwork([this.sensors.rayCount, 6, 4]);
         }
   
         //user controls object
@@ -43,6 +46,14 @@ class Car {
         //updating the sensor to recognise borders and traffic, if the snsor object exists
         if(this.sensors) {
             this.sensors.update(roadBorders, traffic);
+            
+            //giving the neuron low values if far, and hight values when close
+            const offsets = this.sensors.readings.map(
+                s => s == null ? 0 : 1 - s.offset
+            );
+
+            const outputs = NeuralNetwork.feedForward(offsets, this.brain);
+            console.log(outputs);
         }
     }
 
