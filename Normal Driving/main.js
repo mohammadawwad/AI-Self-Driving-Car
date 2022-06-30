@@ -16,7 +16,7 @@ const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 const car = new Car(road.getLaneCenter(1), 100, 30, 50, "KEYS");
 
 //generating multiple AI cars
-const numberOfCars = 50;
+const numberOfCars = 200;
 const cars = generateCars(numberOfCars);
 
 //gloabl variable for the best car, which will be set to the first car at the start
@@ -27,7 +27,7 @@ if(localStorage.getItem("bestBrain")){
 
     //looping over the cars and giving them the previous neural network
     for(let i = 0; i < cars.length; i++){
-        bestCar.brain = JSON.parse(localStorage.getItem("bestBrain"));
+        cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
 
         //mutating all the other cars to have some sort of variation based on the saved network, the variation depends on the amount value givwen bellow 
         if(i != 0){
@@ -37,13 +37,23 @@ if(localStorage.getItem("bestBrain")){
 }
 
 //creating an array of cars for traffic, make sure to specify is is traffic and its speed
-const traffic = [
+let traffic = [
     new Car(road.getLaneCenter(1), -100, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(2), -300, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(2), -550, 30, 50, "TRAFFIC", 2),
     new Car(road.getLaneCenter(0), -600, 30, 50, "TRAFFIC", 2),
-    new Car(road.getLaneCenter(4), -700, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(3), -700, 30, 50, "TRAFFIC", 2),
 ]
+
+//adding more randomly generated traffic
+
+for(let x = 0; x < 100; x++){
+    let laneNum = Math.round(Math.random() * 3);
+    let distanceOptions = [100, 110, 120];
+    let randomDistance = Math.round(Math.random() * 2);
+
+    traffic.push(new Car(road.getLaneCenter(laneNum), -800 - x * distanceOptions[randomDistance], 30, 50, "TRAFFIC", 2));
+} 
 
 //repeativly calls the animate function
 animate();
@@ -71,6 +81,11 @@ function saveNetwork(){
 //removing the best cars brain neural network
 function discardNetwork(){
     localStorage.removeItem("bestBrain");
+}
+
+//reloads the page to play again
+function playAgain(){
+    location.reload();
 }
 
 //animates the car to allow it to moveby repainting and errasing
@@ -131,6 +146,4 @@ function animate(time){
     networkVisualizer.drawNetwork(neuralNetworkCTX, bestCar.brain);
     requestAnimationFrame(animate);
 }
-
-
 

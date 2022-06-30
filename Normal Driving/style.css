@@ -1,31 +1,49 @@
 body {
     margin: 0;
-    background: darkgray;
+    background: rgb(211, 206, 206);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: "Roboto", sans-serif;
 }
 
-#verticalButtons {
+#veriticalButtons {
     display: flex;
     flex-direction: column;
 }
 
 button {
+    font-size: 22px;;
     border: none;
     border-radius: 5px;
     padding: 5px 5px 7px 5px;
-    margin: 2px;
+    margin: 8px;
     cursor: pointer;
 }
 
 button:hover {
-    background: blue;
+    background-color: rgb(33, 143, 216) !important;
 }
+
+#gameNotes {
+    font-size: 20px;
+    max-width: 500px;
+    margin-right: 50px;
+}
+
+#gameNotes h2{
+    color: purple;
+}
+
+#gameNotes li{
+    margin-bottom: 8px;
+}
+
 
 #CarCanvas { 
     background: lightgray;
+    margin-right: 10px;
 }
 
 #NueralNetworkCanvas { 

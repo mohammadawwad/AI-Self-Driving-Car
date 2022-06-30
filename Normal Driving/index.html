@@ -8,18 +8,32 @@
 
     <body>
     
+       
+        <!-- Save and delete buttons for the network -->
+        <div id="gameNotes">
+            <h2>Drive The Purple Car Far Enough To Win!</h2>
+            <ul>
+                <li>Avoid the Traffic (Blue cars), if you crash you lose!</li>
+                <li>Fall too far behind the lead AI car and you lose!</li>
+                <li>Press The "Save Network" Button to make the AI (Green Cars) harder to play against</li>
+                <li>Press The "Delete Network" Button if the AI gets stuck bouncing behind a car</li>
+            </ul>
+            <img src="wasd.png" height="150px"/>
+            <img src="arrow.png" height="150px"/>
+        </div>
+
         <!-- Car and Road Canvas  -->
         <canvas id="CarCanvas"></canvas>
 
+        <!-- Neural Network Canvas  -->
+        <canvas id="NueralNetworkCanvas"></canvas>
+
         <!-- Save and delete buttons for the network -->
         <div id="veriticalButtons">
-            <button onClick="saveNetwork()">Save</button>
-            <button onClick="discardNetwork()">Delete</button>
+            <button onClick="playAgain()" style="background:rgb(46, 196, 46)">Play Again ▶</button>
+            <button onClick="saveNetwork()" style="background-color:rgb(46, 81, 196)">Save Network 💾</button>
+            <button onClick="discardNetwork()" style="background-color:rgb(196, 46, 46)">Delete Network 🗑️</button>
         </div>
-
-
-        <!-- Car and Road Canvas  -->
-        <canvas id="NueralNetworkCanvas"></canvas>
 
 
         <!-- Network Visualizer JS file -->
