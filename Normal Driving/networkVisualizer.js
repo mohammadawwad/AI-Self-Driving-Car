@@ -9,6 +9,11 @@ class networkVisualizer{
 
         const levelHeight = height / network.levels.length;
 
+        ctx.font = "24px Arial";
+        ctx.fillStyle = "yellow";
+        ctx.fillText("Lead AI's Car Nueral Network", 50, 50);
+        ctx.fill();
+
         for(let i = network.levels.length - 1; i >= 0; i--){
             const levelTop = top +
                 lerp(
@@ -18,7 +23,9 @@ class networkVisualizer{
                 );
 
             ctx.setLineDash([7,3]);
-            networkVisualizer.drawLevel(ctx,network.levels[i],
+            networkVisualizer.drawLevel(
+                ctx,
+                network.levels[i],
                 left,
                 levelTop,
                 width,

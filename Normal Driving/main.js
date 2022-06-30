@@ -13,7 +13,7 @@ const neuralNetworkCTX = neuralNetworkCanvas.getContext("2d");
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
 // was "KEYS" before to be able to drive the car
-const car = new Car(road.getLaneCenter(1), 100, 30, 50, "KEYS");
+const playerCar = new Car(road.getLaneCenter(1), 100, 30, 50, "KEYS");
 
 //generating multiple AI cars
 const numberOfCars = 200;
@@ -109,7 +109,7 @@ function animate(time){
     for(let i = 0; i < cars.length; i++){
         cars[i].update(road.borders, traffic);
     }
-    car.update(road.borders, traffic);
+    playerCar.update(road.borders, traffic);
 
     //stretching full screen vertically, its in here as it will constantly be called and will be responsive
     carCanvas.height = window.innerHeight;
@@ -117,7 +117,7 @@ function animate(time){
 
     //make a camera follow the best car
     carCTX.save();
-    carCTX.translate(0, (-bestCar.y + -car.y) / 2 +  carCanvas.height * 0.7)
+    carCTX.translate(0, (-bestCar.y + -playerCar.y) / 2 +  carCanvas.height * 0.7)
 
     //draws the road
     road.draw(carCTX);
@@ -133,11 +133,49 @@ function animate(time){
        cars[i].draw(carCTX, "green");
     }
     
+    //check if the player wins or loses remember going up means -
+    if(playerCar.y <= bestCar.y - 800){
+        document.getElementById("gameStatus").innerHTML = "YOU WIN!";
+        document.getElementById("gameStatus").style.color = "green";
+        stopGame();
+    }
+
+    if(bestCar.y <= playerCar.y - 800){
+        document.getElementById("gameStatus").innerHTML = "YOU FELL BEHIND AND LOST!";
+        document.getElementById("gameStatus").style.color = "red";
+        stopGame();
+    }
+
+    if(playerCar.damaged == true){
+        document.getElementById("gameStatus").innerHTML = "YOU CRASHED AND LOST!";
+        document.getElementById("gameStatus").style.color = "red";
+        stopGame();
+    }
+
+    //function that stops all game movement
+    function stopGame(){
+
+        //stops all AI
+        for(let i = 0; i < cars.length; i++){
+            cars[i].speed = 0;
+            cars[i].acceleration = 0;
+        }
+
+        //Stops all traffic
+        for(let x = 0; x < traffic.length; x++){
+            traffic[x].speed = 0;
+            traffic[x].acceleration = 0;
+        }
+
+        //stops player car
+        playerCar.speed = 0;
+        playerCar.acceleration = 0;
+    }
 
     //setting the transperency back to normal for the car in view and making it the only one to have the sensors
     carCTX.globalAlpha = 1;
     bestCar.draw(carCTX, "green", true)
-    car.draw(carCTX, "purple", true);
+    playerCar.draw(carCTX, "purple");
 
     carCTX.restore();
 
