@@ -13,10 +13,10 @@ const neuralNetworkCTX = neuralNetworkCanvas.getContext("2d");
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
 // was "KEYS" before to be able to drive the car
-const playerCar = new Car(road.getLaneCenter(1), 100, 30, 50, "KEYS");
+const playerCar = new Car(road.getLaneCenter(1), 100, 30, 50, "KEYS", 3.5, "purple");
 
 //generating multiple AI cars
-const numberOfCars = 200;
+const numberOfCars = 100;
 const cars = generateCars(numberOfCars);
 
 //gloabl variable for the best car, which will be set to the first car at the start
@@ -38,11 +38,11 @@ if(localStorage.getItem("bestBrain")){
 
 //creating an array of cars for traffic, make sure to specify is is traffic and its speed
 let traffic = [
-    new Car(road.getLaneCenter(1), -100, 30, 50, "TRAFFIC", 2),
-    new Car(road.getLaneCenter(2), -300, 30, 50, "TRAFFIC", 2),
-    new Car(road.getLaneCenter(2), -550, 30, 50, "TRAFFIC", 2),
-    new Car(road.getLaneCenter(0), -600, 30, 50, "TRAFFIC", 2),
-    new Car(road.getLaneCenter(3), -700, 30, 50, "TRAFFIC", 2),
+    new Car(road.getLaneCenter(1), -100, 30, 50, "TRAFFIC", 2, getRandomColor()),
+    new Car(road.getLaneCenter(2), -300, 30, 50, "TRAFFIC", 2, getRandomColor()),
+    new Car(road.getLaneCenter(2), -550, 30, 50, "TRAFFIC", 2, getRandomColor()),
+    new Car(road.getLaneCenter(0), -600, 30, 50, "TRAFFIC", 2, getRandomColor()),
+    new Car(road.getLaneCenter(3), -700, 30, 50, "TRAFFIC", 2, getRandomColor()),
 ]
 
 //adding more randomly generated traffic
@@ -52,7 +52,7 @@ for(let x = 0; x < 100; x++){
     let distanceOptions = [100, 110, 120];
     let randomDistance = Math.round(Math.random() * 2);
 
-    traffic.push(new Car(road.getLaneCenter(laneNum), -800 - x * distanceOptions[randomDistance], 30, 50, "TRAFFIC", 2));
+    traffic.push(new Car(road.getLaneCenter(laneNum), -800 - x * distanceOptions[randomDistance], 30, 50, "TRAFFIC", 2, getRandomColor()));
 } 
 
 //repeativly calls the animate function

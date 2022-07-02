@@ -30,6 +30,34 @@ class Car {
 
         //user controls object
         this.controls = new Controls(controlType);
+
+        //image used for the car
+        this.carImg = new Image();
+        this.carImg.src = "car.png";
+
+        //mini canvas mask for the car to allow us to change their colors
+        this.mask = document.createElement("canvas");
+        this.mask.width = width;
+        this.mask.height = height;
+
+        //drawing the cars image on the mask
+        const maskCTX = this.mask.getContext("2d");
+        this.carImg.onload = () => {
+            
+            //changes the cars color depending on if it has crashed
+            if (this.damaged == true) {
+                maskCTX.fillStyle = "red";
+            } else {
+                maskCTX.fillStyle = color;
+            }
+
+            maskCTX.rect(0, 0, this.width, this.height);
+            maskCTX.fill();
+
+            //when we draw the car img above the rectangle it will keep the original box's color only where the pixels overlap
+            maskCTX.globalCompositeOperation = "destination-atop";
+            maskCTX.drawImage(this.carImg, 0, 0, this.width, this.height);
+        }
     }
 
     //method that updates the cars graphics through the following private methods
@@ -71,6 +99,7 @@ class Car {
     //method that draws the car with draw sensors deault being false
     draw(ctx, color, drawSensors = false) {
 
+        /* FOR ORIGINAL CAR BOXES
         //changes the cars color depending on if it has crashed
         if (this.damaged == true) {
             ctx.fillStyle = "red";
@@ -90,13 +119,21 @@ class Car {
 
         //filling in the rectangle
         ctx.fill();
-  
+        */
 
         //car having the responsibility for drawing its sensors if the object exists and its sensors is set to true
         if (this.sensors && drawSensors) {
             this.sensors.draw(ctx);
         }
 
+        //drawing the mask canvas for the car and its actual image
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(-this.angle);
+        ctx.drawImage(this.mask, -this.width / 2, -this.height / 2, this.width, this.height);
+        ctx.globalCompositeOperation = "multiply";
+        ctx.drawImage(this.carImg, -this.width / 2, -this.height / 2, this.width, this.height);
+        ctx.restore();
     }
 
     //creating a hitbox useable for all shapes

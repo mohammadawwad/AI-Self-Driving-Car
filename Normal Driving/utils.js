@@ -53,3 +53,10 @@ function polysIntersect(poly1, poly2) {
     //if the car is safe it will return false (hasnt crashed)
     return false;
 }
+
+
+//function for getting random traffic car colors
+function getRandomColor(){
+    const hue = 170 + Math.random() * 260;
+    return "hsl("+hue+", 100%, 60%)";
+}
