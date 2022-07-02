@@ -113,11 +113,14 @@ class Car {
                 ctx.save();
                 ctx.translate(this.x, this.y);
                 ctx.rotate(-this.angle);
-                ctx.drawImage(this.mask, -this.width / 2, -this.height / 2, this.width, this.height);
-                ctx.globalCompositeOperation = "multiply";
+
+                if(!this.damaged){
+                    ctx.drawImage(this.mask, -this.width / 2, -this.height / 2, this.width, this.height);
+                    ctx.globalCompositeOperation = "multiply";
+                }
+
                 ctx.drawImage(this.carImg, -this.width / 2, -this.height / 2, this.width, this.height);
                 ctx.restore();
-
                 break;
 
             case true:
@@ -140,7 +143,6 @@ class Car {
 
                 //filling in the rectangle
                 ctx.fill();
-
                 break;
             }
 
