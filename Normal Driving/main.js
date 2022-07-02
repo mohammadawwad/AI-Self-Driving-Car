@@ -172,6 +172,7 @@ function animate(time){
         playerCar.acceleration = 0;
     }
 
+
     //setting the transperency back to normal for the car in view and making it the only one to have the sensors
     carCTX.globalAlpha = 1;
     bestCar.draw(carCTX, "green", true)
@@ -179,9 +180,40 @@ function animate(time){
 
     carCTX.restore();
 
+
     //visualising the neural network
     neuralNetworkCTX.lineDashOffset = -time / 50
     networkVisualizer.drawNetwork(neuralNetworkCTX, bestCar.brain);
     requestAnimationFrame(animate);
 }
 
+//changes the cars view between simple squares and images
+function changeViewMode(){
+    if(playerCar.viewType == true){
+
+        //changes them to image mode
+        playerCar.viewType = false;
+
+        for(let x = 0; x < traffic.length; x++){
+            traffic[x].viewType = false;
+        }
+        
+        for(let i = 0; i < cars.length; i++){
+            cars[i].viewType = false;
+        }
+    }
+    else{
+
+        //changes them to simple mode
+        playerCar.viewType = true;
+
+        for(let x = 0; x < traffic.length; x++){
+            traffic[x].viewType = true;
+        }
+
+        for(let i = 0; i < cars.length; i++){
+            cars[i].viewType = true;
+        }
+    }
+
+}

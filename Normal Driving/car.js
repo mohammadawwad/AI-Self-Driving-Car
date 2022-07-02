@@ -16,6 +16,9 @@ class Car {
         //collision variable
         this.damaged = false;
 
+        //if they want the cars images it is false, if they want simple box's it is true
+        this.viewType = false;
+
         //allows for the neural network to control the car 
         this.useNeuarlBrain = controlType == "AI";
 
@@ -40,24 +43,27 @@ class Car {
         this.mask.width = width;
         this.mask.height = height;
 
-        //drawing the cars image on the mask
-        const maskCTX = this.mask.getContext("2d");
-        this.carImg.onload = () => {
-            
-            //changes the cars color depending on if it has crashed
-            if (this.damaged == true) {
-                maskCTX.fillStyle = "red";
-            } else {
-                maskCTX.fillStyle = color;
+        //drawing the cars image on the mask as long as they dont want simple view
+        if(this.viewType == false){
+            const maskCTX = this.mask.getContext("2d");
+            this.carImg.onload = () => {
+                
+                //changes the cars color depending on if it has crashed
+                if (this.damaged == true) {
+                    maskCTX.fillStyle = "red";
+                } else {
+                    maskCTX.fillStyle = color;
+                }
+    
+                maskCTX.rect(0, 0, this.width, this.height);
+                maskCTX.fill();
+    
+                //when we draw the car img above the rectangle it will keep the original box's color only where the pixels overlap
+                maskCTX.globalCompositeOperation = "destination-atop";
+                maskCTX.drawImage(this.carImg, 0, 0, this.width, this.height);
             }
-
-            maskCTX.rect(0, 0, this.width, this.height);
-            maskCTX.fill();
-
-            //when we draw the car img above the rectangle it will keep the original box's color only where the pixels overlap
-            maskCTX.globalCompositeOperation = "destination-atop";
-            maskCTX.drawImage(this.carImg, 0, 0, this.width, this.height);
         }
+
     }
 
     //method that updates the cars graphics through the following private methods
@@ -99,41 +105,50 @@ class Car {
     //method that draws the car with draw sensors deault being false
     draw(ctx, color, drawSensors = false) {
 
-        /* FOR ORIGINAL CAR BOXES
-        //changes the cars color depending on if it has crashed
-        if (this.damaged == true) {
-            ctx.fillStyle = "red";
-        } else {
-            ctx.fillStyle = color;
-        }
+        //decides whether a box view will be shown or the car images
+        switch(this.viewType){
+            case false:
 
-        ctx.beginPath();
+                //drawing the mask canvas for the car and its actual image
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(-this.angle);
+                ctx.drawImage(this.mask, -this.width / 2, -this.height / 2, this.width, this.height);
+                ctx.globalCompositeOperation = "multiply";
+                ctx.drawImage(this.carImg, -this.width / 2, -this.height / 2, this.width, this.height);
+                ctx.restore();
 
-        //drawing the first polygon points
-        ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
+                break;
 
-        //looping over all polygon points array to finish the drawing
-        for (let i = 1; i < this.polygon.length; i++) {
-            ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
-        }
+            case true:
+                //changes the cars color depending on if it has crashed
+                if (this.damaged == true) {
+                    ctx.fillStyle = "red";
+                } else {
+                    ctx.fillStyle = color;
+                }
 
-        //filling in the rectangle
-        ctx.fill();
-        */
+                ctx.beginPath();
 
-        //car having the responsibility for drawing its sensors if the object exists and its sensors is set to true
-        if (this.sensors && drawSensors) {
-            this.sensors.draw(ctx);
-        }
+                //drawing the first polygon points
+                ctx.moveTo(this.polygon[0].x, this.polygon[0].y);
 
-        //drawing the mask canvas for the car and its actual image
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(-this.angle);
-        ctx.drawImage(this.mask, -this.width / 2, -this.height / 2, this.width, this.height);
-        ctx.globalCompositeOperation = "multiply";
-        ctx.drawImage(this.carImg, -this.width / 2, -this.height / 2, this.width, this.height);
-        ctx.restore();
+                //looping over all polygon points array to finish the drawing
+                for (let i = 1; i < this.polygon.length; i++) {
+                    ctx.lineTo(this.polygon[i].x, this.polygon[i].y);
+                }
+
+                //filling in the rectangle
+                ctx.fill();
+
+                break;
+            }
+
+
+            //car having the responsibility for drawing its sensors if the object exists and its sensors is set to true
+            if (this.sensors && drawSensors) {
+                this.sensors.draw(ctx);
+            }
     }
 
     //creating a hitbox useable for all shapes
@@ -249,4 +264,7 @@ class Car {
         //making forward go in the direction based off the cars angle
         this.x -= Math.sin(this.angle) * this.speed;
     }
+
 }
+
+
